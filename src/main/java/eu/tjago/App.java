@@ -1,6 +1,10 @@
 package eu.tjago;
 
 import eu.tjago.dao.WordpressClient;
+import eu.tjago.entity.User;
+
+import java.util.List;
+import java.util.Optional;
 
 /**
  * Hello world!
@@ -20,6 +24,11 @@ public class App
         WordpressClient wpClient = new WordpressClient();
 
 //        wpClient.createTables();
-        wpClient.insertUser("mrpaullo", "JohnPaullo@gmail.com");
+//        wpClient.insertUser("mrpaullo", "JohnPaullo@gmail.com");
+
+
+        Optional<List> users = Optional.ofNullable(wpClient.getAllUsers());
+
+        users.ifPresent(u -> u.stream().forEach(System.out::println));
     }
 }

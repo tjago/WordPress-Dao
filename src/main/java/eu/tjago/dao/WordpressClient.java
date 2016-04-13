@@ -1,17 +1,16 @@
 package eu.tjago.dao;
 
 import eu.tjago.entity.User;
+import eu.tjago.entity.UserMeta;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.jdbc.ScriptRunner;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
-import javax.persistence.Persistence;
+import javax.persistence.*;
 import java.io.Reader;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 
 public class WordpressClient {
@@ -42,8 +41,7 @@ public class WordpressClient {
         }
     }
 
-
-    public Set<User> getAllUsers() {
+    public List<UserMeta> getUserMeta(Long userId) {
 
         EntityManager entityManager = emf.createEntityManager();
         EntityTransaction transaction = entityManager.getTransaction();
@@ -51,6 +49,13 @@ public class WordpressClient {
         try {
             transaction.begin();
 
+            Query query = entityManager.createQuery("select um from UserMeta as um where um.userId = :userId"); //TODO create Named Query
+            query.setParameter("userId", userId);
+
+            List<UserMeta> usermeta = query.getResultList();
+
+            //print all users to Console
+            usermeta.stream().forEach(UserMeta::toString);
 
             transaction.commit();
 
@@ -62,6 +67,34 @@ public class WordpressClient {
         }
 
         return null;
+    }
+
+    public List<User> getAllUsers() {
+
+        List<User> users = null;
+
+        EntityManager entityManager = emf.createEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
+        try {
+            transaction.begin();
+
+            Query query = entityManager.createQuery("select u from User as u");
+            users = query.getResultList();
+
+            transaction.commit();
+
+        } catch(Exception e) {
+            if(transaction != null) { transaction.rollback(); }
+            e.printStackTrace();
+        } finally {
+            if(entityManager != null) { entityManager.close(); }
+        }
+
+        return users;
+    }
+
+    public User getSingleUser() {
+        return  null;
     }
 
     public void createTables() {

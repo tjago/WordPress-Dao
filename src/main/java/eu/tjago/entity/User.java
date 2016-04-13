@@ -24,32 +24,32 @@ public class User {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column(name = "user_login", nullable = false) // == username in WP-admin
+    @Column(name = "user_login", length = 60, nullable = false) // == username in WP-admin
     private String login;
 
-    @Column(name = "user_pass", nullable = false)
+    @Column(name = "user_pass", length = 64, nullable = false)
     private String password;
 
-    @Column(name = "user_nicename", nullable = false)
+    @Column(name = "user_nicename", length = 50, nullable = false)
     private String nicename = "";
 
-    @Column(name = "user_email", nullable = false)
+    @Column(name = "user_email", length = 100, nullable = false)
     private String email;
 
-    @Column(name = "user_url", nullable = false)
+    @Column(name = "user_url", length = 100, nullable = false)
     private String url = "";
 
     //set SYSDATE from dbms-side
     @Column(name = "user_registered", nullable = false)
     private LocalDateTime registred;
 
-    @Column(name = "user_activation_key", nullable = false)
+    @Column(name = "user_activation_key", length = 60, nullable = false)
     private String activationKey;
 
     @Column(name = "user_status", nullable = false)
     private Integer status = UserStatus.HAM.getValue();
 
-    @Column(name = "display_name", nullable = false)
+    @Column(name = "display_name", length = 250, nullable = false)
     private String displayName = "";
 
     public User() {
