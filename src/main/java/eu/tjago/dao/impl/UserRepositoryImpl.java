@@ -17,77 +17,123 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public void insertUser(String username, String email) {
 
-        EntityManager entityManager = emf.createEntityManager();
-        EntityTransaction transaction = entityManager.getTransaction();
+        EntityManager em = emf.createEntityManager();
 
         User user = new User(username, email);
 
         try {
-            transaction.begin();
+            em.getTransaction().begin();
 //            formUser.setDisplayName("Don"); //changed in form default value
 
-            entityManager.persist(user);
-            transaction.commit();
+            em.persist(user);
+            em.getTransaction().commit();
 
         } catch(Exception e) {
-            if(transaction != null) { transaction.rollback(); }
+            if(em.getTransaction() != null) { em.getTransaction().rollback(); }
             e.printStackTrace();
         } finally {
-            entityManager.close();
+            em.close();
         }
     }
 
     @Override
     public void insertUser(User user) {
 
-        EntityManager entityManager = emf.createEntityManager();
-        EntityTransaction transaction = entityManager.getTransaction();
+        EntityManager em = emf.createEntityManager();
 
         try {
-            transaction.begin();
-            entityManager.persist(user);
-            transaction.commit();
+            em.getTransaction().begin();
+            em.persist(user);
+            em.getTransaction().commit();
 
         } catch(Exception e) {
-            if(transaction != null) { transaction.rollback(); }
+            if(em.getTransaction() != null) { em.getTransaction().rollback(); }
             e.printStackTrace();
         } finally {
-            entityManager.close();
+            em.close();
         }
     }
 
     @Override
-    public List<UserMeta> getUserMeta(Long userId) {
+    public List<UserMeta> getAllUserMeta(Long userId) {
 
-        EntityManager entityManager = emf.createEntityManager();
-        EntityTransaction transaction = entityManager.getTransaction();
+        List<UserMeta> usermeta = null;
+
+        EntityManager em = emf.createEntityManager();
 
         try {
-            transaction.begin();
+            em.getTransaction().begin();
 
-            Query query = entityManager.createQuery("select um from UserMeta as um where um.userId = :userId"); //TODO create Named Query
+            Query query = em.createNamedQuery(UserMeta.GET_ALL_USERMETA);
             query.setParameter("userId", userId);
 
-            List<UserMeta> usermeta = query.getResultList();
+             usermeta = query.getResultList();
 
-            //print all users to Console
+            //print all usermeta to Console
             usermeta.stream().forEach(UserMeta::toString);
 
-            transaction.commit();
+            em.getTransaction().commit();
 
         } catch(Exception e) {
-            if(transaction != null) { transaction.rollback(); }
+            if(em.getTransaction() != null) { em.getTransaction().rollback(); }
             e.printStackTrace();
         } finally {
-            entityManager.close();
+            em.close();
         }
 
-        return null;
+        return usermeta;
     }
 
     @Override
-    public void setUserMeta(Long userId, String key, String value) {
+    public String getUserMetaByKey(String key, Long userId) {
 
+        String usermetaValue = "";
+
+        EntityManager em = emf.createEntityManager();
+
+        try {
+            em.getTransaction().begin();
+
+            Query query = em.createNamedQuery(UserMeta.GET_USERMETA_BY_KEY);
+            query.setParameter("userId", userId);
+            query.setParameter("key", key);
+
+            usermetaValue = (String) query.getSingleResult();
+
+            //print all usermeta to Console
+            System.out.format("\nUsermeta for user %s and key[%s] = %s .", userId.toString(), key, usermetaValue);
+
+            em.getTransaction().commit();
+
+        } catch(Exception e) {
+            if(em.getTransaction() != null) { em.getTransaction().rollback(); }
+            e.printStackTrace();
+        } finally {
+            em.close();
+        }
+
+        return usermetaValue;
+    }
+
+    public void setUserMeta(Long userId, String key, String value) {
+        //TODO remove or implement when necessary
+    }
+
+    @Override
+    public void setUserMeta(UserMeta userMeta) {
+        EntityManager em = emf.createEntityManager();
+
+        try {
+            em.getTransaction().begin();
+            em.persist(userMeta);
+            em.getTransaction().commit();
+
+        } catch(Exception e) {
+            if(em.getTransaction() != null) { em.getTransaction().rollback(); }
+            e.printStackTrace();
+        } finally {
+            em.close();
+        }
     }
 
     @Override
@@ -95,21 +141,20 @@ public class UserRepositoryImpl implements UserRepository {
 
         List<User> users = null;
 
-        EntityManager entityManager = emf.createEntityManager();
-        EntityTransaction transaction = entityManager.getTransaction();
+        EntityManager em = emf.createEntityManager();
         try {
-            transaction.begin();
+            em.getTransaction().begin();
 
-            Query query = entityManager.createNamedQuery(User.GET_ALL_USERS);
+            Query query = em.createNamedQuery(User.GET_ALL_USERS);
             users = query.getResultList();
 
-            transaction.commit();
+            em.getTransaction().commit();
 
         } catch(Exception e) {
-            if(transaction != null) { transaction.rollback(); }
+            if(em.getTransaction() != null) { em.getTransaction().rollback(); }
             e.printStackTrace();
         } finally {
-            entityManager.close();
+            em.close();
         }
 
         return users;
@@ -123,22 +168,21 @@ public class UserRepositoryImpl implements UserRepository {
     public List<User> getUsersLike(String pattern) {
         List<User> users = null;
 
-        EntityManager entityManager = emf.createEntityManager();
-        EntityTransaction transaction = entityManager.getTransaction();
+        EntityManager em = emf.createEntityManager();
         try {
-            transaction.begin();
+            em.getTransaction().begin();
 
-            Query namedQuery = entityManager.createNamedQuery(User.GET_USERS_LIKE);
+            Query namedQuery = em.createNamedQuery(User.GET_USERS_LIKE);
             namedQuery.setParameter("pattern", "%" + pattern + "%");
             users = namedQuery.getResultList();
 
-            transaction.commit();
+            em.getTransaction().commit();
 
         } catch(Exception e) {
-            if(transaction != null) { transaction.rollback(); }
+            if(em.getTransaction() != null) { em.getTransaction().rollback(); }
             e.printStackTrace();
         } finally {
-            entityManager.close();
+            em.close();
         }
 
         return users;

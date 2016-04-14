@@ -7,7 +7,27 @@ import java.util.Objects;
  * Created by Tomasz on 2016-04-13.
  */
 @Entity
+@Table(name = "wp_usermeta")
+
+@NamedQueries({
+        @NamedQuery(
+                name = UserMeta.GET_ALL_USERMETA,
+                query = "SELECT um FROM UserMeta AS um WHERE um.userId = :userId"
+        ),
+        @NamedQuery(
+                name = UserMeta.GET_USERMETA_BY_KEY,
+                query = "SELECT um FROM UserMeta AS um WHERE um.userId = :userId AND um.key = :key"
+        )
+//        ,
+//        @NamedQuery(
+//                name = UserMeta.SET_USERMETA,
+//                query = "INSERT um FROM UserMeta AS um WHERE um.userId = :userId AND um.key = :key"
+//        )
+})
 public class UserMeta {
+
+    public static final String GET_ALL_USERMETA = "getAllUserMeta";
+    public static final String GET_USERMETA_BY_KEY = "getUserMetaByKey";
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

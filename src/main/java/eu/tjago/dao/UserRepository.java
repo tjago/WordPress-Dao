@@ -19,7 +19,9 @@ public interface UserRepository {
 
     User getSingleUser(Long userId);
 
-    List<UserMeta> getUserMeta(Long userId);
+    List<UserMeta> getAllUserMeta(Long userId);
 
-    void setUserMeta(Long userId, String key, String value);
+    String getUserMetaByKey(String key, Long userId);
+
+    void setUserMeta(UserMeta userMeta);
 }
