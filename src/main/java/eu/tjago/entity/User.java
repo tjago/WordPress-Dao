@@ -14,11 +14,30 @@ import java.util.Objects;
  */
 @Entity
 @Table(name = "wp_users")
-@NamedQuery(
-        name = "getAllUsers",
-        query = "SELECT u.email FROM User as u" //" WHERE name = :name"
-)
+@NamedQueries({
+        @NamedQuery(
+                name = User.GET_ALL_USERS,
+                query = "select u from User as u"
+        ),
+        @NamedQuery(
+                name = User.GET_USER_BY_ID,
+                query = "select u from User as u WHERE id = :userId"
+        ),
+        @NamedQuery(
+                name = User.GET_USER_BY_NAME,
+                query = "select u from User as u WHERE login = :name"
+        ),
+        @NamedQuery(
+                name = User.GET_USERS_LIKE,
+                query = "select u from User as u WHERE (u.login LIKE :pattern OR u.nicename LIKE :pattern)"
+        ),
+})
 public class User {
+
+    public final static String GET_ALL_USERS    = "getAllUsers";
+    public final static String GET_USER_BY_ID   = "getUserById";
+    public final static String GET_USER_BY_NAME = "getUserByName";
+    public static final String GET_USERS_LIKE   = "getUsersLike";
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

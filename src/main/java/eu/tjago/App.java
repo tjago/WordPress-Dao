@@ -1,7 +1,8 @@
 package eu.tjago;
 
-import eu.tjago.dao.WordpressClient;
-import eu.tjago.entity.User;
+import eu.tjago.dao.UserRepository;
+import eu.tjago.dao.impl.UserRepositoryImpl;
+import eu.tjago.util.DBManagementUtil;
 
 import java.util.List;
 import java.util.Optional;
@@ -15,19 +16,20 @@ import java.util.Optional;
  */
 public class App 
 {
+    UserRepository userRepository = new UserRepositoryImpl();
+
     public static void main( String[] args ) throws InterruptedException {
         System.out.println( "JPA App starting.." );
         new App().run();
     }
 
     private void run() {
-        WordpressClient wpClient = new WordpressClient();
+        DBManagementUtil dbUtil = new DBManagementUtil();
+//        dbUtil.createTables();
 
-//        wpClient.createTables();
-//        wpClient.insertUser("mrpaullo", "JohnPaullo@gmail.com");
+//        userRepository.insertUser("mrpaullo", "JohnPaullo@gmail.com");
 
-
-        Optional<List> users = Optional.ofNullable(wpClient.getAllUsers());
+        Optional<List> users = Optional.ofNullable(userRepository.getAllUsers());
 
         users.ifPresent(u -> u.stream().forEach(System.out::println));
     }

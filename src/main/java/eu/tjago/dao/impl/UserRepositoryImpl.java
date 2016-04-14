@@ -1,46 +1,62 @@
-package eu.tjago.dao;
+package eu.tjago.dao.impl;
 
+import eu.tjago.dao.UserRepository;
 import eu.tjago.entity.User;
 import eu.tjago.entity.UserMeta;
-import org.apache.ibatis.io.Resources;
-import org.apache.ibatis.jdbc.ScriptRunner;
 
 import javax.persistence.*;
-import java.io.Reader;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Set;
 
-public class WordpressClient {
+/**
+ * Created by Tomasz on 2016-04-14.
+ */
+public class UserRepositoryImpl implements UserRepository {
 
     private EntityManagerFactory emf = Persistence.createEntityManagerFactory("wordpress-dao");
 
+    @Override
     public void insertUser(String username, String email) {
 
         EntityManager entityManager = emf.createEntityManager();
         EntityTransaction transaction = entityManager.getTransaction();
 
+        User user = new User(username, email);
+
         try {
             transaction.begin();
+//            formUser.setDisplayName("Don"); //changed in form default value
 
-            //TODO Logic here
-            User formUser = new User(username, email);
-            formUser.setDisplayName("Don"); //changed in form default value
-
-            entityManager.persist(formUser);
-
+            entityManager.persist(user);
             transaction.commit();
 
         } catch(Exception e) {
             if(transaction != null) { transaction.rollback(); }
             e.printStackTrace();
         } finally {
-            if(entityManager != null) { entityManager.close(); }
+            entityManager.close();
         }
     }
 
+    @Override
+    public void insertUser(User user) {
+
+        EntityManager entityManager = emf.createEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
+
+        try {
+            transaction.begin();
+            entityManager.persist(user);
+            transaction.commit();
+
+        } catch(Exception e) {
+            if(transaction != null) { transaction.rollback(); }
+            e.printStackTrace();
+        } finally {
+            entityManager.close();
+        }
+    }
+
+    @Override
     public List<UserMeta> getUserMeta(Long userId) {
 
         EntityManager entityManager = emf.createEntityManager();
@@ -63,12 +79,18 @@ public class WordpressClient {
             if(transaction != null) { transaction.rollback(); }
             e.printStackTrace();
         } finally {
-            if(entityManager != null) { entityManager.close(); }
+            entityManager.close();
         }
 
         return null;
     }
 
+    @Override
+    public void setUserMeta(Long userId, String key, String value) {
+
+    }
+
+    @Override
     public List<User> getAllUsers() {
 
         List<User> users = null;
@@ -78,7 +100,7 @@ public class WordpressClient {
         try {
             transaction.begin();
 
-            Query query = entityManager.createQuery("select u from User as u");
+            Query query = entityManager.createNamedQuery(User.GET_ALL_USERS);
             users = query.getResultList();
 
             transaction.commit();
@@ -87,33 +109,39 @@ public class WordpressClient {
             if(transaction != null) { transaction.rollback(); }
             e.printStackTrace();
         } finally {
-            if(entityManager != null) { entityManager.close(); }
+            entityManager.close();
         }
 
         return users;
     }
 
-    public User getSingleUser() {
+    @Override
+    public User getSingleUser(Long userId) {
         return  null;
     }
 
-    public void createTables() {
+    public List<User> getUsersLike(String pattern) {
+        List<User> users = null;
 
+        EntityManager entityManager = emf.createEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
         try {
+            transaction.begin();
 
-            Reader reader = Resources.getResourceAsReader("schema.sql");
+            Query namedQuery = entityManager.createNamedQuery(User.GET_USERS_LIKE);
+            namedQuery.setParameter("pattern", "%" + pattern + "%");
+            users = namedQuery.getResultList();
 
-            Class.forName("org.mariadb.jdbc.Driver");
+            transaction.commit();
 
-            //dbname doesn't matter, it's overriden in sql script
-            Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3310/wordpress", "root", "pass123");
-
-            ScriptRunner runner = new ScriptRunner(conn);
-
-            runner.runScript(reader);
-
-        } catch (Exception e) {
+        } catch(Exception e) {
+            if(transaction != null) { transaction.rollback(); }
             e.printStackTrace();
+        } finally {
+            entityManager.close();
         }
+
+        return users;
+
     }
 }
