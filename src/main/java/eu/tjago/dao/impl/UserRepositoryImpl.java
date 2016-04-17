@@ -55,6 +55,25 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
+    public void removeUserByID(Long userId) {
+
+        EntityManager em = emf.createEntityManager();
+
+        try {
+            em.getTransaction().begin();
+            User user = em.find(User.class, userId);
+            em.remove(user);
+            em.getTransaction().commit();
+
+        } catch(Exception e) {
+            if(em.getTransaction() != null) { em.getTransaction().rollback(); }
+            e.printStackTrace();
+        } finally {
+            em.close();
+        }
+    }
+
+    @Override
     public List<UserMeta> getAllUserMeta(Long userId) {
 
         List<UserMeta> usermeta = null;

@@ -15,6 +15,8 @@ public interface UserRepository {
 
     void insertUser(User user);
 
+    void removeUserByID(Long userId);
+
     List<User> getAllUsers();
 
     User getSingleUser(Long userId);

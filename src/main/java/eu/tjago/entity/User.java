@@ -6,7 +6,9 @@ import eu.tjago.util.PasswordUtil;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -70,6 +72,9 @@ public class User {
 
     @Column(name = "display_name", length = 250, nullable = false)
     private String displayName = "";
+
+    @OneToMany(mappedBy = "userId", cascade = CascadeType.REMOVE)
+    List<UserMeta> userMeta = new ArrayList<>();
 
     public User() {
     }
@@ -166,6 +171,14 @@ public class User {
 
     public void setDisplayName(String displayName) {
         this.displayName = displayName;
+    }
+
+    public List<UserMeta> getUserMeta() {
+        return userMeta;
+    }
+
+    public void setUserMeta(List<UserMeta> userMeta) {
+        this.userMeta = userMeta;
     }
 
     @Override
