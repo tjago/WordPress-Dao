@@ -27,7 +27,7 @@ public class App
         DBManagementUtil dbUtil = new DBManagementUtil();
 //        dbUtil.createTables();
 
-//        userRepository.insertUser("mrpaullo", "JohnPaullo@gmail.com");
+        userRepository.insertUser("mrpaullo", "JohnPaullo@gmail.com");
 
         Optional<List> users = Optional.ofNullable(userRepository.getAllUsers());
 

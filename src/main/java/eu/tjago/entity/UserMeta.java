@@ -76,4 +76,16 @@ public class UserMeta {
                 ", key='" + key + '\'' +
                 '}';
     }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public String getValue() {
+        return value;
+    }
 }

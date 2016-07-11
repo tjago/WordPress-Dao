@@ -106,7 +106,7 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public String getUserMetaByKey(String key, Long userId) {
 
-        String usermetaValue = "";
+        UserMeta userMeta = null;
 
         EntityManager em = emf.createEntityManager();
 
@@ -117,10 +117,12 @@ public class UserRepositoryImpl implements UserRepository {
             query.setParameter("userId", userId);
             query.setParameter("key", key);
 
-            usermetaValue = (String) query.getSingleResult();
+            userMeta = (UserMeta)query.getSingleResult();
+
+
 
             //print all usermeta to Console
-            System.out.format("\nUsermeta for user %s and key[%s] = %s .", userId.toString(), key, usermetaValue);
+            System.out.format("\nUsermeta for user %s and key[%s] = %s .", userId.toString(), key, userMeta.getValue());
 
             em.getTransaction().commit();
 
@@ -131,7 +133,7 @@ public class UserRepositoryImpl implements UserRepository {
             em.close();
         }
 
-        return usermetaValue;
+        return userMeta.getValue();
     }
 
     public void setUserMeta(Long userId, String key, String value) {

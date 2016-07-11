@@ -1,19 +1,24 @@
 package eu.tjago.util;
 
-import eu.tjago.entity.User;
-import eu.tjago.entity.UserMeta;
+import org.apache.deltaspike.core.api.config.ConfigProperty;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.jdbc.ScriptRunner;
 
-import javax.persistence.*;
+import javax.inject.Inject;
 import java.io.Reader;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Set;
 
 public class DBManagementUtil {
+
+
+    @Inject
+    @ConfigProperty(name = "database.user")
+    private String user;
+
+    @Inject
+    @ConfigProperty(name = "database.password")
+    private String password;
 
     public void createTables() {
 
@@ -24,7 +29,7 @@ public class DBManagementUtil {
             Class.forName("org.mariadb.jdbc.Driver");
 
             //dbname doesn't matter, it's overriden in sql script
-            Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3310/wordpress", "root", "pass123");
+            Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/wordpress", "root", "forest22");
 
             ScriptRunner runner = new ScriptRunner(conn);
 
