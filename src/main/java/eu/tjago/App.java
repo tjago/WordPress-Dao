@@ -2,7 +2,7 @@ package eu.tjago;
 
 import eu.tjago.dao.UserRepository;
 import eu.tjago.dao.impl.UserRepositoryImpl;
-import eu.tjago.util.DBManagementUtil;
+import eu.tjago.util.DbUtil;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,7 +24,7 @@ public class App
     }
 
     private void run() {
-        DBManagementUtil dbUtil = new DBManagementUtil();
+//        DbUtil dbUtil = new DbUtil();
 //        dbUtil.createTables();
 
         userRepository.insertUser("mrpaullo", "JohnPaullo@gmail.com");

@@ -13,7 +13,7 @@ import spock.lang.Specification
 class UserCrudSpec extends Specification {
 
     @ObjectUnderTest
-    UserRepository userRepository = new UserRepositoryImpl();;
+    UserRepository userRepository = new UserRepositoryImpl();
 
     def setup() {
 
