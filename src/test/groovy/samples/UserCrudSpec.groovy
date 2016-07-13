@@ -8,8 +8,8 @@ import eu.tjago.entity.UserMeta
 import spock.lang.Specification
 
 /**
- * Created by tjago on 12.07.2016.
- */
+*  Created by tjago on 12.07.2016.
+*/
 class UserCrudSpec extends Specification {
 
     @ObjectUnderTest

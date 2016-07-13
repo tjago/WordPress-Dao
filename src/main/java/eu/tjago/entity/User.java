@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * Created by Tomasz on 2016-04-06.
+ * Created by tjago on 2016-04-06.
  */
 @Entity
 @Table(name = "wp_users")

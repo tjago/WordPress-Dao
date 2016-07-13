@@ -4,7 +4,7 @@ import javax.persistence.*;
 import java.util.Objects;
 
 /**
- * Created by Tomasz on 2016-04-13.
+ * Created by tjago on 2016-04-13.
  */
 @Entity
 @Table(name = "wp_usermeta")
@@ -38,7 +38,6 @@ public class UserMeta {
 //    @JoinColumn(name = "user_id")
     @Column(name = "user_id")
     private Long userId;
-//    private User user;
 
     @Column(name = "meta_key")
     private String key;

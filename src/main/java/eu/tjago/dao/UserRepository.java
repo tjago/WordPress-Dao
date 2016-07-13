@@ -6,7 +6,7 @@ import eu.tjago.entity.UserMeta;
 import java.util.List;
 
 /**
- * Created by Tomasz on 2016-04-14.
+ * Created by tjago on 2016-04-14.
  */
 
 public interface UserRepository {
