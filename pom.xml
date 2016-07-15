@@ -96,6 +96,7 @@
       <version>2.4.6</version>
       <scope>test</scope>
     </dependency>
+
     <dependency>
       <groupId>org.spockframework</groupId>
       <artifactId>spock-core</artifactId>
@@ -103,12 +104,18 @@
       <scope>test</scope>
     </dependency>
 
+    <!--Spock dep - allows mocking of classes (in addition to interfaces)-->
+    <dependency>
+      <groupId>cglib</groupId>
+      <artifactId>cglib-nodep</artifactId>
+      <version>3.2.4</version>
+    </dependency>
+
     <dependency>
       <groupId>org.apache.deltaspike.core</groupId>
       <artifactId>deltaspike-core-api</artifactId>
       <version>1.7.0</version>
     </dependency>
-
 
 
   </dependencies>
