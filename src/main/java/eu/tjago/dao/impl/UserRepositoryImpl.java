@@ -19,35 +19,25 @@ public class UserRepositoryImpl implements UserRepository {
     private EntityManagerFactory emf = Persistence.createEntityManagerFactory("wordpress-dao");
 
     @Override
-    public void insertUser(String username, String email) {
-
-        EntityManager em = emf.createEntityManager();
-        User user = new User(username, email);
-        try {
-            em.getTransaction().begin();
-            em.persist(user);
-            em.getTransaction().commit();
-        } catch(Exception e) {
-            if(em.getTransaction() != null) { em.getTransaction().rollback(); }
-            logger.error(e.getMessage());
-        } finally {
-            em.close();
-        }
+    public Long insertUser(String username, String email) {
+        return insertUser(new User(username, email));
     }
 
     @Override
-    public void insertUser(User user) {
+    public Long insertUser(User user) {
         EntityManager em = emf.createEntityManager();
         try {
             em.getTransaction().begin();
             em.persist(user);
             em.getTransaction().commit();
+            return user.getId();
         } catch(Exception e) {
             if(em.getTransaction() != null) { em.getTransaction().rollback(); }
             logger.error(e.getMessage());
         } finally {
             em.close();
         }
+        return null;
     }
 
     @Override

@@ -7,6 +7,6 @@ public class AccountActivationUtil {
 
     public static String generateActivationKey() {
 
-        return "loko-czoko";
+        return "activation-key-for-new-user";
     }
 }

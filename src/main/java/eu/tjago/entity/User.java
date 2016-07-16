@@ -85,7 +85,7 @@ public class User {
     public User(String username, String email, String password) {
 
         this.login = username;
-        this.password = password;
+        this.password = PasswordUtil.hashPassword(password);
         this.email = email;
         this.activationKey = AccountActivationUtil.generateActivationKey();
         this.registred = LocalDateTime.now();

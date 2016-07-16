@@ -11,9 +11,9 @@ import java.util.List;
 
 public interface UserRepository {
 
-    void insertUser(String username, String email);
+    Long insertUser(String username, String email);
 
-    void insertUser(User user);
+    Long insertUser(User user);
 
     boolean updateUser(User user);
 

@@ -117,6 +117,14 @@
       <version>1.7.0</version>
     </dependency>
 
+    <!-- Password encryption library -->
+    <dependency>
+      <groupId>org.mindrot</groupId>
+      <artifactId>jbcrypt</artifactId>
+      <version>0.3m</version>
+    </dependency>
+
+
 
   </dependencies>
 
