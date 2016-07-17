@@ -1,4 +1,4 @@
-package samples
+package eu.tjago;
 
 import eu.tjago.dao.UserRepository
 import eu.tjago.dao.impl.UserRepositoryImpl
@@ -41,7 +41,7 @@ class UserCrudSpec extends Specification {
         then:"fetch user and update user is success"
             userRepository.getSingleUser(janKowalski.getId()).getNicename().equals("Zloty")
 
-        cleanup:"Delete Jan Kowalski"
+        cleanup:"Delete user"
             userRepository.removeUserByID(janKowalski.getId());
     }
 
@@ -99,14 +99,14 @@ class UserCrudSpec extends Specification {
         User janKowalski = new User("janek123", "jan@kowalski.com", plainTextPassword);
         userRepository.insertUser(janKowalski);
 
-        when:"pseudo user Nicename is Zloty"
+        when:"Hashed password is obtained"
         String hashedPassword = userRepository.getSingleUser(janKowalski.getId()).getPassword();
 
         then:"verify plain password is not same as hashed one"
         !hashedPassword.equals(plainTextPassword);
 
-        and:"verify hashed Password is pretty long"
-        hashedPassword.length() > 25;
+        and:"verify hashed password is quite long"
+        hashedPassword.length() > 40;
 
         and:"finally verify hashed password against plain password"
         PasswordUtil.verifyHashPassword(plainTextPassword, hashedPassword)
