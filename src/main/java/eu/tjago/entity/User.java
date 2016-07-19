@@ -66,8 +66,9 @@ public class User {
     @Column(name = "user_activation_key", length = 60, nullable = false)
     private String activationKey;
 
+    @Enumerated(EnumType.ORDINAL)
     @Column(name = "user_status", nullable = false)
-    private Integer status = UserStatus.HAM.getValue();
+    private UserStatus status = UserStatus.HAM;
 
     @Column(name = "display_name", length = 250, nullable = false)
     private String displayName = "";
@@ -156,11 +157,11 @@ public class User {
         this.activationKey = activationKey;
     }
 
-    public Integer getStatus() {
+    public UserStatus getStatus() {
         return status;
     }
 
-    public void setStatus(Integer status) {
+    public void setStatus(UserStatus status) {
         this.status = status;
     }
 
