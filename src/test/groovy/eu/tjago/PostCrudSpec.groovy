@@ -32,8 +32,8 @@ class PostCrudSpec extends Specification {
             postRepository.getPostById(postId).getContent().equals("People has landed on Mars");
 
         cleanup:"remove post"
+            postRepository.deletePostById(postId);
             userRepository.removeUserByID(userId);
-            postRepository.deletePost(postId);
     }
 
 }

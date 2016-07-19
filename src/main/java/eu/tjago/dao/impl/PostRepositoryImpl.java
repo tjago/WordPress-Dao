@@ -63,7 +63,7 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     @Override
-    public Boolean deletePost(Long postId) {
+    public Boolean deletePostById(Long postId) {
 
         EntityManager em = emf.createEntityManager();
         try {
@@ -76,7 +76,6 @@ public class PostRepositoryImpl implements PostRepository {
             if(em.getTransaction() != null) { em.getTransaction().rollback(); }
             logger.error(e.getMessage());
         } finally {
-            //TODO detect if finally will be called if return is put at end of try block
             em.close();
         }
         return false;

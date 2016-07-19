@@ -13,5 +13,5 @@ public interface PostRepository {
 
     Boolean updatePost(Post post);
 
-    Boolean deletePost(Long postId);
+    Boolean deletePostById(Long postId);
 }
