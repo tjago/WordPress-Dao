@@ -72,7 +72,7 @@ public class User {
     @Column(name = "display_name", length = 250, nullable = false)
     private String displayName = "";
 
-    @OneToMany(mappedBy = "userId", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "userId", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     List<UserMeta> userMeta = new ArrayList<>();
 
     public User() {

@@ -9,7 +9,7 @@ public interface PostRepository {
 
     Long insertPost(Post post);
 
-    Post getPost(Long postId);
+    Post getPostById(Long postId);
 
     Boolean updatePost(Post post);
 
