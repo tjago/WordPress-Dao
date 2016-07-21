@@ -24,8 +24,6 @@ public class App
     }
 
     private void run() {
-//        DbUtil dbUtil = new DbUtil();
-//        dbUtil.createTables();
 
         userRepository.insertUser("mrpaullo", "JohnPaullo@gmail.com");
 
