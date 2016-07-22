@@ -59,7 +59,19 @@ public class PostRepositoryImpl implements PostRepository {
 
     @Override
     public Boolean updatePost(Post post) {
-        return null;
+        EntityManager em = emf.createEntityManager();
+        try {
+            em.getTransaction().begin();
+            em.merge(post);
+            em.getTransaction().commit();
+            return true;
+        } catch(Exception e) {
+            if(em.getTransaction() != null) { em.getTransaction().rollback(); }
+            logger.error(e.getMessage());
+        } finally {
+            em.close();
+        }
+        return false;
     }
 
     @Override

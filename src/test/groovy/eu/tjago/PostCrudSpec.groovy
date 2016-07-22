@@ -7,6 +7,7 @@ import eu.tjago.dao.impl.UserRepositoryImpl
 import eu.tjago.entity.Post
 import eu.tjago.entity.User
 import spock.lang.Specification
+
 /**
  * Created by tjago on 18.07.2016.
  */
@@ -21,19 +22,40 @@ class PostCrudSpec extends Specification {
     }
 
     def "insert post"() {
-        given:"new post was created"
-            Long userId = userRepository.insertUser(new User("niceGuy", "russel@hollywood.com", "sourceofwater"));
-            Post todayNews = new Post("People has landed on Mars", "Breaking news!", userRepository.getSingleUser(userId));
+        given: "new post was created"
+            User russel = new User("niceGuy", "russel@hollywood.com", "sourceofwater");
+            Long userId = userRepository.insertUser(russel);
+            Post todayNews = new Post("People has landed on Mars", "Breaking news!", russel);
 
-        when:"insert post in DB"
+        when: "insert post in DB"
             Long postId = postRepository.insertPost(todayNews);
 
-        then:"post content from DB matches inserted String"
-            postRepository.getPostById(postId).getContent().equals("People has landed on Mars");
+        then: "post content from DB matches inserted String"
+            postRepository.getPostById(postId).getContent() == "People has landed on Mars";
 
-        cleanup:"remove post"
+        cleanup: "remove post"
             postRepository.deletePostById(postId);
             userRepository.removeUserByID(userId);
+    }
+
+    def "verify update of the post"() {
+        given:
+            User russel = new User("niceGuy", "russel@hollywood.com", "sourceofwater");
+            Long userId = userRepository.insertUser(russel);
+            Post todayNews = new Post("People has landed on Mars", "Breaking news!", russel);
+            postRepository.insertPost(todayNews)
+        when:
+            todayNews.setContent("People are coming back from Mars");
+            postRepository.updatePost(todayNews);
+            Post fetchedNews = postRepository.getPostById(todayNews.getId())
+
+        then:
+            fetchedNews.getContent() == "People are coming back from Mars"
+
+        cleanup:
+            postRepository.deletePostById(todayNews.getId());
+            userRepository.removeUserByID(userId);
+
     }
 
 }

@@ -10,14 +10,14 @@ import spock.lang.Specification
 class DbCreationSpec extends Specification {
 
     @ObjectUnderTest
-    DbUtil dbUtil = new DbUtil();
+    DbUtil dbUtil;// = new DbUtil();
 
     def setup() {
     }
 
     def "create Db Schema for test Database"() {
         setup:
-            dbUtil.configureDbUtil("localhost", "testuser", "password123", "test", "3306")
+//            dbUtil.configureDbUtil("localhost", "testuser", "password123", "test", "3306")
             dbUtil.createTables();
         expect:
             true

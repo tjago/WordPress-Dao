@@ -106,6 +106,10 @@ public class Post {
         return id;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public String getTitle() {
         return title;
     }
@@ -122,5 +126,15 @@ public class Post {
         return commentCount;
     }
 
+    public void setAuthor(User author) {
+        this.author = author;
+    }
 
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
 }

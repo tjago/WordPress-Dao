@@ -4,7 +4,6 @@ import eu.tjago.dao.UserRepository
 import eu.tjago.dao.impl.UserRepositoryImpl
 import eu.tjago.entity.User
 import eu.tjago.entity.UserMeta
-import eu.tjago.util.EpuapSystem
 import eu.tjago.util.PasswordUtil
 import spock.lang.Specification
 
@@ -16,7 +15,6 @@ import java.time.LocalDateTime
 class UserCrudSpec extends Specification {
 
     UserRepository userRepository;
-    EpuapSystem epuapSystem;
 
     def setup() {
         userRepository = new UserRepositoryImpl();
