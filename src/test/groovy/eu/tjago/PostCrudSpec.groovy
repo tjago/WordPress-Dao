@@ -23,7 +23,7 @@ class PostCrudSpec extends Specification {
 
     def "insert post"() {
         given: "new post was created"
-            User russel = new User("niceGuy", "russel@hollywood.com", "sourceofwater");
+            User russel = new User("niceGuy", "RickMartin@hollywood.com", "sourceofwater");
             Long userId = userRepository.insertUser(russel);
             Post todayNews = new Post("People has landed on Mars", "Breaking news!", russel);
 
@@ -31,7 +31,7 @@ class PostCrudSpec extends Specification {
             Long postId = postRepository.insertPost(todayNews);
 
         then: "post content from DB matches inserted String"
-            postRepository.getPostById(postId).getContent() == "People has landed on Mars";
+            postRepository.getPostById(postId).get().getContent() == "People has landed on Mars";
 
         cleanup: "remove post"
             postRepository.deletePostById(postId);
@@ -39,24 +39,26 @@ class PostCrudSpec extends Specification {
     }
 
     def "verify update of the post"() {
-        given:
-            User russel = new User("niceGuy", "russel@hollywood.com", "sourceofwater");
+        given:"new user"
+            User russel = new User("niceGuy", "russelcrowe@hollywood.com", "sourceofwater");
             Long userId = userRepository.insertUser(russel);
+
+        and: "new post by user"
             Post todayNews = new Post("People has landed on Mars", "Breaking news!", russel);
             postRepository.insertPost(todayNews)
-        when:
+
+        when: "post is changed"
             todayNews.setContent("People are coming back from Mars");
             postRepository.updatePost(todayNews);
             Optional<Post> fetchedNews = postRepository.getPostById(todayNews.getId())
 
-        then:
+        then: "verify post fetched from repository is changed as well"
             fetchedNews.isPresent();
             fetchedNews.get().getContent() == "People are coming back from Mars"
 
         cleanup:
             postRepository.deletePostById(todayNews.getId());
             userRepository.removeUserByID(userId);
-
     }
 
 }

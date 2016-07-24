@@ -130,11 +130,25 @@ public class Post {
         this.author = author;
     }
 
+    public User getAuthor() {
+        return author;
+    }
+
     public void setContent(String content) {
         this.content = content;
     }
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    @Override
+    public String toString() {
+        return "Post{" +
+                "author=" + author.getEmail() +
+                ", postDate=" + postDate +
+                ", title='" + title + '\'' +
+                ", excerpt='" + excerpt + '\'' +
+                '}';
     }
 }

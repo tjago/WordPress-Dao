@@ -25,17 +25,21 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public Long insertUser(User user) {
-        EntityManager em = emf.createEntityManager();
-        try {
-            em.getTransaction().begin();
-            em.persist(user);
-            em.getTransaction().commit();
-            return user.getId();
-        } catch(Exception e) {
-            if(em.getTransaction() != null) { em.getTransaction().rollback(); }
-            logger.error(e.getMessage());
-        } finally {
-            em.close();
+        if (!user.getEmail().isEmpty() &&
+                !getUserByEmail(user.getEmail()).isPresent()) {
+
+            EntityManager em = emf.createEntityManager();
+            try {
+                em.getTransaction().begin();
+                em.persist(user);
+                em.getTransaction().commit();
+                return user.getId();
+            } catch(Exception e) {
+                if(em.getTransaction() != null) { em.getTransaction().rollback(); }
+                logger.error(e.getMessage());
+            } finally {
+                em.close();
+            }
         }
         return null;
     }
@@ -73,89 +77,6 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public List<UserMeta> getAllUserMeta(Long userId) {
-        List<UserMeta> usermeta = null;
-        EntityManager em = emf.createEntityManager();
-        try {
-            em.getTransaction().begin();
-            Query query = em.createNamedQuery(UserMeta.GET_ALL_USERMETA);
-            query.setParameter("userId", userId);
-            usermeta = query.getResultList();
-
-            //print all usermeta to Console
-            //usermeta.stream().forEach(UserMeta::toString);
-            em.getTransaction().commit();
-        } catch(Exception e) {
-            if(em.getTransaction() != null) { em.getTransaction().rollback(); }
-            logger.error(e.getMessage());
-        } finally {
-            em.close();
-        }
-        return usermeta;
-    }
-
-    @Override
-    public String getUserMetaByKey(String key, Long userId) {
-
-//        UserMeta userMeta = null;
-        Optional<UserMeta> userMeta = Optional.empty();
-
-        EntityManager em = emf.createEntityManager();
-
-        try {
-            em.getTransaction().begin();
-
-            Query query = em.createNamedQuery(UserMeta.GET_USERMETA_BY_KEY);
-            query.setParameter("userId", userId);
-            query.setParameter("key", key);
-
-            userMeta = Optional.of((UserMeta)query.getSingleResult());
-            //print all usermeta to Console
-            System.out.format("\nUsermeta for user %s and key[%s] = %s .", userId.toString(), key, userMeta.get().getValue());
-            em.getTransaction().commit();
-        } catch(Exception e) {
-            if(em.getTransaction() != null) { em.getTransaction().rollback(); }
-            logger.error(e.getMessage());
-        } finally {
-            em.close();
-        }
-        return userMeta.orElse(null).getValue();
-    }
-
-    public void setUserMeta(Long userId, String key, String value) {
-        EntityManager em = emf.createEntityManager();
-
-        try {
-            em.getTransaction().begin();
-//            em.persist(userMeta);
-            em.getTransaction().commit();
-
-        } catch(Exception e) {
-            if(em.getTransaction() != null) { em.getTransaction().rollback(); }
-            e.printStackTrace();
-        } finally {
-            em.close();
-        }
-    }
-
-    @Override
-    public void setUserMeta(UserMeta userMeta) {
-        EntityManager em = emf.createEntityManager();
-
-        try {
-            em.getTransaction().begin();
-            em.persist(userMeta);
-            em.getTransaction().commit();
-
-        } catch(Exception e) {
-            if(em.getTransaction() != null) { em.getTransaction().rollback(); }
-            logger.error(e.getMessage());
-        } finally {
-            em.close();
-        }
-    }
-
-    @Override
     public List<User> getAllUsers() {
         List<User> users = null;
         EntityManager em = emf.createEntityManager();
@@ -174,7 +95,7 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public User getSingleUser(Long userId) {
+    public User getUserById(Long userId) {
         User user = null;
         EntityManager em = emf.createEntityManager();
         try {
@@ -192,21 +113,47 @@ public class UserRepositoryImpl implements UserRepository {
         return user;
     }
 
-    public List<User> getUsersLike(String pattern) {
-        List<User> users = null;
+    @Override
+    public Optional<User> getUserByEmail(String email) {
         EntityManager em = emf.createEntityManager();
         try {
             em.getTransaction().begin();
+
+            Query namedQuery = em.createNamedQuery(User.GET_USER_BY_EMAIL);
+            namedQuery.setParameter("email", email);
+            User user = (User)namedQuery.getSingleResult();
+
+            em.getTransaction().commit();
+
+            return Optional.ofNullable(user);
+        } catch(Exception e) {
+            if(em.getTransaction() != null) { em.getTransaction().rollback(); }
+            logger.info(e.getMessage());
+        } finally {
+            em.close();
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    public Optional<List<User>> getUsersLike(String pattern) {
+        EntityManager em = emf.createEntityManager();
+        try {
+            em.getTransaction().begin();
+
             Query namedQuery = em.createNamedQuery(User.GET_USERS_LIKE);
             namedQuery.setParameter("pattern", "%" + pattern + "%");
-            users = namedQuery.getResultList();
+            List<User> users = namedQuery.getResultList();
+
             em.getTransaction().commit();
+
+            return Optional.ofNullable(users);
         } catch(Exception e) {
             if(em.getTransaction() != null) { em.getTransaction().rollback(); }
             logger.error(e.getMessage());
         } finally {
             em.close();
         }
-        return users;
+        return Optional.empty();
     }
 }

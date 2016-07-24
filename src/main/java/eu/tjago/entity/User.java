@@ -29,6 +29,10 @@ import java.util.Objects;
                 query = "select u from User as u WHERE login = :name"
         ),
         @NamedQuery(
+                name = User.GET_USER_BY_EMAIL,
+                query = "select u from User as u WHERE email = :email"
+        ),
+        @NamedQuery(
                 name = User.GET_USERS_LIKE,
                 query = "select u from User as u WHERE (u.login LIKE :pattern OR u.nicename LIKE :pattern)"
         ),
@@ -39,6 +43,7 @@ public class User {
     public final static String GET_USER_BY_ID   = "getUserById";
     public final static String GET_USER_BY_NAME = "getUserByName";
     public static final String GET_USERS_LIKE   = "getUsersLike";
+    public static final String GET_USER_BY_EMAIL = "getUserByEmail";
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
