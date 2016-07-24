@@ -24,7 +24,7 @@ public class Post {
     private Long id;
 
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name ="post_author", nullable = false)
 //    @Column(name ="post_author")
     private User author;
@@ -75,11 +75,11 @@ public class Post {
 //    @Column(name = "post_parent", nullable = false, insertable = false)
     private Post parent;
 
-    @Column(name = "guid", length = 255, insertable = false)
-    private String guid;
+    @Column(name = "guid", length = 255, nullable = false)
+    private String guid = "";
 
-    @Column(name = "menu_order", insertable = false)
-    private Integer menuOrder;
+    @Column(name = "menu_order", nullable = false)
+    private Integer menuOrder = 0;
 
     @Column(name = "post_type", length = 20, nullable = false)
     private String type = "";

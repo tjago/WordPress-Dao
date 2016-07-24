@@ -36,25 +36,26 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     @Override
-    public Post getPostById(Long postId) {
+    public Optional<Post> getPostById(Long postId) {
 
         EntityManager em = emf.createEntityManager();
-        Optional<Post> collectedPost = Optional.empty();
         try {
             em.getTransaction().begin();
 
             Query query = em.createNamedQuery(Post.GET_POST_BY_ID);
             query.setParameter("postId", postId);
+            Post fetchedPost = (Post)query.getSingleResult();
 
-            collectedPost = Optional.of((Post)query.getSingleResult());
             em.getTransaction().commit();
+
+            return Optional.ofNullable(fetchedPost);
         } catch(Exception e) {
             if(em.getTransaction() != null) { em.getTransaction().rollback(); }
             logger.error(e.getMessage());
         } finally {
             em.close();
         }
-        return collectedPost.orElse(null);
+        return Optional.empty();
     }
 
     @Override

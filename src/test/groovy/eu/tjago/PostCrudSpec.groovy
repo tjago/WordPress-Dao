@@ -47,10 +47,11 @@ class PostCrudSpec extends Specification {
         when:
             todayNews.setContent("People are coming back from Mars");
             postRepository.updatePost(todayNews);
-            Post fetchedNews = postRepository.getPostById(todayNews.getId())
+            Optional<Post> fetchedNews = postRepository.getPostById(todayNews.getId())
 
         then:
-            fetchedNews.getContent() == "People are coming back from Mars"
+            fetchedNews.isPresent();
+            fetchedNews.get().getContent() == "People are coming back from Mars"
 
         cleanup:
             postRepository.deletePostById(todayNews.getId());

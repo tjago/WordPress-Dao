@@ -10,8 +10,8 @@ import spock.lang.Specification
 import java.time.LocalDateTime
 
 /**
-*  Created by tjago on 12.07.2016.
-*/
+ *  Created by tjago on 12.07.2016.
+ */
 class UserCrudSpec extends Specification {
 
     UserRepository userRepository;
@@ -30,16 +30,16 @@ class UserCrudSpec extends Specification {
             User janKowalski = new User("janek123", "jan@kowalski.com", "ToughPass123");
             userRepository.insertUser(janKowalski);
 
-        when:"pseudo user Nicename is Zloty"
+        when: "pseudo user Nicename is Zloty"
             janKowalski.setNicename("Zloty");
 
-        and:"update user field"
+        and: "update user field"
             userRepository.updateUser(janKowalski);
 
-        then:"fetch user and update user is success"
+        then: "fetch user and update user is success"
             userRepository.getSingleUser(janKowalski.getId()).getNicename().equals("Zloty")
 
-        cleanup:"Delete user"
+        cleanup: "Delete user"
             userRepository.removeUserByID(janKowalski.getId());
     }
 
@@ -69,47 +69,47 @@ class UserCrudSpec extends Specification {
     def "verify new user has date created"() {
 
         setup: "add new user with password"
-        User janKowalski = new User("janek123", "jan@kowalski.com", "ToughPass123");
+            User janKowalski = new User("janek123", "jan@kowalski.com", "ToughPass123");
 
-        when:"inserted new user"
-        userRepository.insertUser(janKowalski);
+        when: "inserted new user"
+            userRepository.insertUser(janKowalski);
 
-        and:"get time registered"
-        LocalDateTime registrationTime = userRepository.getSingleUser(janKowalski.getId()).getRegistered()
+        and: "get time registered"
+            LocalDateTime registrationTime = userRepository.getSingleUser(janKowalski.getId()).getRegistered()
 
-        and:"get today's time"
-        LocalDateTime now = LocalDateTime.now();
+        and: "get today's time"
+            LocalDateTime now = LocalDateTime.now();
 
-        then:"compare if it equals with today date, don't run on 0:00 hour"
-        registrationTime.getYear() == now.getYear();
-        registrationTime.getMonth() == now.getMonth();
-        registrationTime.getDayOfMonth() == now.getDayOfMonth();
-        registrationTime.getHour() <= now.getHour();
+        then: "compare if it equals with today date, don't run on 0:00 hour"
+            registrationTime.getYear() == now.getYear();
+            registrationTime.getMonth() == now.getMonth();
+            registrationTime.getDayOfMonth() == now.getDayOfMonth();
+            registrationTime.getHour() <= now.getHour();
 
-        cleanup:"Delete user"
-        userRepository.removeUserByID(janKowalski.getId());
+        cleanup: "Delete user"
+            userRepository.removeUserByID(janKowalski.getId());
     }
 
     def "verify hashing user password works"() {
 
         setup: "add new user with password"
-        String plainTextPassword = "ToughPass123";
-        User janKowalski = new User("janek123", "jan@kowalski.com", plainTextPassword);
-        userRepository.insertUser(janKowalski);
+            String plainTextPassword = "ToughPass123";
+            User janKowalski = new User("janek123", "jan@kowalski.com", plainTextPassword);
+            userRepository.insertUser(janKowalski);
 
-        when:"Hashed password is obtained"
-        String hashedPassword = userRepository.getSingleUser(janKowalski.getId()).getPassword();
+        when: "Hashed password is obtained"
+            String hashedPassword = userRepository.getSingleUser(janKowalski.getId()).getPassword();
 
-        then:"verify plain password is not same as hashed one"
-        !hashedPassword.equals(plainTextPassword);
+        then: "verify plain password is not same as hashed one"
+            hashedPassword != plainTextPassword;
 
-        and:"verify hashed password is quite long"
-        hashedPassword.length() > 40;
+        and: "verify hashed password is quite long"
+            hashedPassword.length() > 40;
 
-        and:"finally verify hashed password against plain password"
-        PasswordUtil.verifyHashPassword(plainTextPassword, hashedPassword)
+        and: "finally verify hashed password against plain password"
+            PasswordUtil.verifyHashPassword(plainTextPassword, hashedPassword)
 
-        cleanup:"Delete Jan Kowalski"
-        userRepository.removeUserByID(janKowalski.getId());
+        cleanup: "Delete Jan Kowalski"
+            userRepository.removeUserByID(janKowalski.getId());
     }
 }
