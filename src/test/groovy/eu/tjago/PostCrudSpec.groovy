@@ -61,4 +61,24 @@ class PostCrudSpec extends Specification {
             userRepository.removeUserByID(userId);
     }
 
+    def "verify delete post works"() {
+        given:"new user"
+            User russel = new User("niceGuy", "russelcrowe@hollywood.com", "sourceofwater");
+            Long userId = userRepository.insertUser(russel);
+
+        and:"persisted to DB"
+            Post todayNews = new Post("People has landed on Mars", "Breaking news!", russel);
+            postRepository.insertPost(todayNews)
+
+        when:"Post deleted"
+            postRepository.deletePostById(todayNews.getId());
+
+        then:"Post not found"
+            postRepository.getPostById(todayNews.getId());
+
+        and:"User remains in DB"
+            userRepository.getUserById(userId).isPresent()
+
+    }
+
 }

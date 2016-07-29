@@ -22,7 +22,7 @@ public interface UserRepository {
 
     List<User> getAllUsers();
 
-    User getUserById(Long userId);
+    Optional<User> getUserById(Long userId);
 
     Optional<User> getUserByEmail(String email);
 

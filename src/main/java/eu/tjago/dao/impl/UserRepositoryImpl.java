@@ -95,22 +95,25 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public User getUserById(Long userId) {
-        User user = null;
+    public Optional<User> getUserById(Long userId) {
         EntityManager em = emf.createEntityManager();
         try {
             em.getTransaction().begin();
+
             Query namedQuery = em.createNamedQuery(User.GET_USER_BY_ID);
             namedQuery.setParameter("userId", userId);
-            user = (User)namedQuery.getSingleResult();
+            User user = (User)namedQuery.getSingleResult();
+
             em.getTransaction().commit();
+
+            return Optional.ofNullable(user);
         } catch(Exception e) {
             if(em.getTransaction() != null) { em.getTransaction().rollback(); }
             logger.error(e.getMessage());
         } finally {
             em.close();
         }
-        return user;
+        return Optional.empty();
     }
 
     @Override
