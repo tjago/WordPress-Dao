@@ -12,9 +12,9 @@ import java.util.Optional;
 
 public interface UserRepository {
 
-    Long insertUser(String username, String email);
+    Long insertUser(String username, String email) throws Exception;
 
-    Long insertUser(User user);
+    Long insertUser(User user) throws Exception;
 
     boolean updateUser(User user);
 

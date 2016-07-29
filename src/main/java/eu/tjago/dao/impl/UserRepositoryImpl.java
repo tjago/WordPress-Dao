@@ -19,12 +19,12 @@ public class UserRepositoryImpl implements UserRepository {
     private EntityManagerFactory emf = Persistence.createEntityManagerFactory("wordpress-dao");
 
     @Override
-    public Long insertUser(String username, String email) {
+    public Long insertUser(String username, String email) throws Exception {
         return insertUser(new User(username, email));
     }
 
     @Override
-    public Long insertUser(User user) {
+    public Long insertUser(User user) throws Exception {
         if (!user.getEmail().isEmpty() &&
                 !getUserByEmail(user.getEmail()).isPresent()) {
 
@@ -40,6 +40,8 @@ public class UserRepositoryImpl implements UserRepository {
             } finally {
                 em.close();
             }
+        } else {
+            throw new Exception("Trying to insert an empty user or with same email");
         }
         return null;
     }

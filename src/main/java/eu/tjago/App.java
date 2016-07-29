@@ -25,7 +25,11 @@ public class App
 
     private void run() {
 
-        userRepository.insertUser("mrpaullo", "JohnPaullo@gmail.com");
+        try {
+            userRepository.insertUser("mrpaullo", "JohnPaullo@gmail.com");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         Optional<List> users = Optional.ofNullable(userRepository.getAllUsers());
 

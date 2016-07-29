@@ -79,6 +79,9 @@ class PostCrudSpec extends Specification {
         and:"User remains in DB"
             userRepository.getUserById(userId).isPresent()
 
+        cleanup:"remove user"
+            userRepository.removeUserByID(userId)
+
     }
 
 }
