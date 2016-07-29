@@ -12,8 +12,8 @@
             <!-- Database connection settings -->
             <property name="javax.persistence.jdbc.driver" value="org.mariadb.jdbc.Driver" />
             <property name="javax.persistence.jdbc.user" value="root" />
-            <property name="javax.persistence.jdbc.password" value="pass123" />
-            <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3310/wordpress" />
+            <property name="javax.persistence.jdbc.password" value="forest22" />
+            <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/wordpress" />
             <!--<property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/udemy-chp5" />-->
             <!--<property name="javax.persistence.jdbc.password" value="password123" />-->
 

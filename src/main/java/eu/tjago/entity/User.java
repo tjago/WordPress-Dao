@@ -29,6 +29,10 @@ import java.util.Objects;
                 query = "select u from User as u WHERE login = :name"
         ),
         @NamedQuery(
+                name = User.GET_USER_BY_EMAIL,
+                query = "select u from User as u WHERE email = :email"
+        ),
+        @NamedQuery(
                 name = User.GET_USERS_LIKE,
                 query = "select u from User as u WHERE (u.login LIKE :pattern OR u.nicename LIKE :pattern)"
         ),
@@ -39,6 +43,7 @@ public class User {
     public final static String GET_USER_BY_ID   = "getUserById";
     public final static String GET_USER_BY_NAME = "getUserByName";
     public static final String GET_USERS_LIKE   = "getUsersLike";
+    public static final String GET_USER_BY_EMAIL = "getUserByEmail";
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -66,13 +71,14 @@ public class User {
     @Column(name = "user_activation_key", length = 60, nullable = false)
     private String activationKey;
 
+    @Enumerated(EnumType.ORDINAL)
     @Column(name = "user_status", nullable = false)
-    private Integer status = UserStatus.HAM.getValue();
+    private UserStatus status = UserStatus.HAM;
 
     @Column(name = "display_name", length = 250, nullable = false)
     private String displayName = "";
 
-    @OneToMany(mappedBy = "userId", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "userId", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     List<UserMeta> userMeta = new ArrayList<>();
 
     public User() {
@@ -156,11 +162,11 @@ public class User {
         this.activationKey = activationKey;
     }
 
-    public Integer getStatus() {
+    public UserStatus getStatus() {
         return status;
     }
 
-    public void setStatus(Integer status) {
+    public void setStatus(UserStatus status) {
         this.status = status;
     }
 

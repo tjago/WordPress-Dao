@@ -4,6 +4,7 @@ import eu.tjago.entity.User;
 import eu.tjago.entity.UserMeta;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created by tjago on 2016-04-14.
@@ -21,11 +22,9 @@ public interface UserRepository {
 
     List<User> getAllUsers();
 
-    User getSingleUser(Long userId);
+    Optional<User> getUserById(Long userId);
 
-    List<UserMeta> getAllUserMeta(Long userId);
+    Optional<User> getUserByEmail(String email);
 
-    String getUserMetaByKey(String key, Long userId);
-
-    void setUserMeta(UserMeta userMeta);
+    Optional<List<User>> getUsersLike(String pattern);
 }
