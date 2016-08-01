@@ -1,5 +1,8 @@
 package eu.tjago.dao;
 
+import eu.tjago.entity.PostMeta;
+
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -7,7 +10,9 @@ import java.util.Optional;
  */
 public interface PostMetaRepository extends GenericDao {
 
-    Optional getOneForPost(Long postId, String key);
+    Optional<PostMeta> getOneForPost(Long postId, String key);
 
-    Optional getAllForPost(Long postId);
+    Optional<String> getPostMataValue(Long postId, String key);
+
+    Optional<List<PostMeta>> getAllForPost(Long postId);
 }

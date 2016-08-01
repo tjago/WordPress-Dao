@@ -12,11 +12,11 @@ import java.util.Objects;
 @NamedQueries({
         @NamedQuery(
                 name = PostMeta.GET_ALL_POSTMETA,
-                query = "SELECT um FROM UserMeta AS um WHERE um.userId = :userId"
+                query = "SELECT um FROM PostMeta AS um WHERE um.postId = :postId"
         ),
         @NamedQuery(
                 name = PostMeta.GET_POSTMETA_BY_KEY,
-                query = "SELECT um FROM UserMeta AS um WHERE um.userId = :userId AND um.key = :key"
+                query = "SELECT um FROM PostMeta AS um WHERE um.postId = :postId AND um.key = :key"
         )
 //        ,
 //        @NamedQuery(

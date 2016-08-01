@@ -90,21 +90,7 @@ public class UserRepositoryImpl extends GenericDaoImpl implements UserRepository
 
     @Deprecated
     public Optional<User> getUserById(Long userId) {
-        try {
-            this.entityManager.getTransaction().begin();
-
-            Query namedQuery = this.entityManager.createNamedQuery(User.GET_USER_BY_ID);
-            namedQuery.setParameter("userId", userId);
-            User user = (User)namedQuery.getSingleResult();
-
-            this.entityManager.getTransaction().commit();
-
-            return Optional.ofNullable(user);
-        } catch(Exception e) {
-            if(this.entityManager.getTransaction() != null) { this.entityManager.getTransaction().rollback(); }
-            logger.error(e.getMessage());
-        }
-        return Optional.empty();
+        return this.read(userId);
     }
 
     @Override

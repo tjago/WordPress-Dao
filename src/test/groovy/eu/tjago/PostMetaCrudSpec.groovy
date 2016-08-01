@@ -67,8 +67,42 @@ class PostMetaCrudSpec extends Specification {
             postMetaRepository.create(sponsorLink)
             postMetaRepository.create(relatedArticles)
 
-        then:"fetch all postMeta"
-            postMetaRepository.readAll(news.getId())
+        and:"get all Meta for Post"
+            def listOfPostMeta = postMetaRepository.getAllForPost(news.getId())
+
+        then:"check postmeta List size"
+                listOfPostMeta.get().size()  == 3
+
+        and:"list contains objects"
+            listOfPostMeta.get().contains(newsTags)
+            listOfPostMeta.get().contains(sponsorLink)
+            listOfPostMeta.get().contains(relatedArticles)
+
+        cleanup:"delete all PostMeta"
+            postMetaRepository.delete(newsTags)
+            postMetaRepository.delete(sponsorLink)
+            postMetaRepository.delete(relatedArticles)
+    }
+
+    def "get PostMeta by key"() {
+
+        given:"new PostMeta"
+            def metaKey = "Tags"
+            def sponsorLink = new PostMeta(news.getId(), "sponsorLink", "http://bbc.co.uk")
+            def newsTags = new PostMeta(news.getId(), metaKey, "weather, alert")
+
+        when:"persist PostMeta"
+            postMetaRepository.create(newsTags);
+
+        and:"get PostMeta from dao"
+            PostMeta fetchedTags = postMetaRepository.getOneForPost(news.getId(), metaKey).orElse(new PostMeta()) as PostMeta;
+
+        then: "verify fetched data matched input"
+            fetchedTags.getValue() == newsTags.getValue();
+
+        cleanup:"delete PostMeta"
+            postMetaRepository.delete(sponsorLink)
+            postMetaRepository.delete(newsTags);
     }
 
     def cleanup() {
