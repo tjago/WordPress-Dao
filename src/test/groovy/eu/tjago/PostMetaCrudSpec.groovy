@@ -46,13 +46,29 @@ class PostMetaCrudSpec extends Specification {
             postMetaRepository.create(newsTags);
 
         and:"get postmeta from dao"
-            PostMeta fetchedTags = postMetaRepository.read(newsTags.getId()).get();
+            PostMeta fetchedTags = postMetaRepository.read(newsTags.getId()).orElse(new PostMeta()) as PostMeta;
 
         then: "verify fetched data matched input"
             fetchedTags.getValue() == newsTags.getValue();
 
         cleanup:"delete PostMeta"
             postMetaRepository.delete(newsTags);
+    }
+
+    def "get list of PostMeta"() {
+
+        given:"new multiple Postmeta"
+            def newsTags = new PostMeta(news.getId(), "Tags", "weather, alert")
+            def sponsorLink = new PostMeta(news.getId(), "sponsorLink", "http://bbc.co.uk")
+            def relatedArticles = new PostMeta(news.getId(), "relatedArticles", "/last-summer-heat;/dried-rivers")
+
+        when:"saved postmeta"
+            postMetaRepository.create(newsTags)
+            postMetaRepository.create(sponsorLink)
+            postMetaRepository.create(relatedArticles)
+
+        then:"fetch all postMeta"
+            postMetaRepository.readAll(news.getId())
     }
 
     def cleanup() {

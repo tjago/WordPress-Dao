@@ -1,18 +1,13 @@
 package eu.tjago.dao;
 
-import eu.tjago.entity.PostMeta;
-import eu.tjago.entity.UserMeta;
-
-import java.util.List;
+import java.util.Optional;
 
 /**
  * Created by jagod on 24/07/2016.
  */
 public interface PostMetaRepository extends GenericDao {
 
-//    List<PostMeta> getAllPostMeta(Long userId);
+    Optional getOneForPost(Long postId, String key);
 
-    String getPostMetaByKey(String key, Long postId);
-
-//    void setPostMeta(PostMeta postMeta);
+    Optional getAllForPost(Long postId);
 }

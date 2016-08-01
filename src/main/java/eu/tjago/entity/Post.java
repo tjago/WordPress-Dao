@@ -1,5 +1,7 @@
 package eu.tjago.entity;
 
+import eu.tjago.listener.GeneralEntityListener;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
@@ -8,6 +10,7 @@ import java.time.LocalDateTime;
  */
 
 @Entity
+@EntityListeners(GeneralEntityListener.class)
 @Table(name = "wp_posts")
 @NamedQueries({
         @NamedQuery(
@@ -145,10 +148,9 @@ public class Post {
     @Override
     public String toString() {
         return "Post{" +
-                "author=" + author.getEmail() +
+                "title='" + title + '\'' +
+                ", author=" + author.getEmail() +
                 ", postDate=" + postDate +
-                ", title='" + title + '\'' +
-                ", excerpt='" + excerpt + '\'' +
                 '}';
     }
 }

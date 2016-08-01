@@ -3,11 +3,9 @@ package eu.tjago.dao.impl;
 import eu.tjago.dao.GenericDao;
 import org.apache.log4j.Logger;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-import javax.persistence.PersistenceContext;
+import javax.persistence.*;
 import java.io.Serializable;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -59,6 +57,27 @@ public class GenericDaoImpl<T, PK extends Serializable> implements GenericDao<T,
     }
 
     @Override
+    public Optional<List<T>> readAll() {
+
+        try {
+            this.entityManager.getTransaction().begin();
+
+            Query query = entityManager.createNamedQuery("select e from " + entityClass.getName());
+
+            @SuppressWarnings("unchecked")
+            List<T> listOfEntities = (List<T>) query.getResultList();
+
+            this.entityManager.getTransaction().commit();
+
+            return Optional.ofNullable(listOfEntities);
+        } catch(Exception e) {
+            if(entityManager.getTransaction() != null) { entityManager.getTransaction().rollback(); }
+            logger.error(e.getMessage());
+        }
+        return Optional.empty();
+    }
+
+    @Override
     public T update(T t) {
         try {
             this.entityManager.getTransaction().begin();
@@ -73,7 +92,6 @@ public class GenericDaoImpl<T, PK extends Serializable> implements GenericDao<T,
 
     @Override
     public void delete(T t) {
-//        this.entityManager.remove(t); //TODO WHY not just remove??
         try {
             this.entityManager.getTransaction().begin();
             t = this.entityManager.merge(t);

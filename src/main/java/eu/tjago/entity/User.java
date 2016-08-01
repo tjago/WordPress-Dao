@@ -1,6 +1,7 @@
 package eu.tjago.entity;
 
 import eu.tjago.enums.UserStatus;
+import eu.tjago.listener.GeneralEntityListener;
 import eu.tjago.util.AccountActivationUtil;
 import eu.tjago.util.PasswordUtil;
 
@@ -14,6 +15,7 @@ import java.util.Objects;
  * Created by tjago on 2016-04-06.
  */
 @Entity
+@EntityListeners(GeneralEntityListener.class)
 @Table(name = "wp_users")
 @NamedQueries({
         @NamedQuery(

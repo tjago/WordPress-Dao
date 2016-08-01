@@ -14,44 +14,49 @@ import java.time.LocalDateTime
 class UserCrudSpec extends Specification {
 
     UserRepository userRepository;
+    User newUser;
+    String plainTextPassword = "ToughPass123";
 
     def setup() {
         userRepository = new UserRepositoryImpl();
+        newUser = new User("janek123", "jan@kowalski.com", plainTextPassword);
+    }
+
+    def cleanup() {
+        userRepository.delete(newUser);
     }
 
     def "add user, update user and delete user"() {
 
-        setup: "add new user with password"
-            User janKowalski = new User("janek123", "jan@kowalski.com", "ToughPass123");
-            userRepository.insertUser(janKowalski);
+        setup: "persist user"
+            userRepository.create(newUser);
 
         when: "pseudo user Nicename is Zloty"
-            janKowalski.setNicename("Zloty");
+            newUser.setNicename("Zloty");
 
         and: "update user field"
-            userRepository.updateUser(janKowalski);
+            userRepository.update(newUser);
 
         then: "fetch user and and verify updated field"
-            def fetchedUser = userRepository.getUserById(janKowalski.getId())
+            def fetchedUser = (Optional<User>)userRepository.read(newUser.getId())
             if(fetchedUser.isPresent()) {
                 fetchedUser.get().getNicename() == "Zloty"
             }
 
-        cleanup: "Delete user"
-            userRepository.removeUserByID(janKowalski.getId());
+        cleanup:"delete user from DB"
+            userRepository.delete(newUser)
     }
 
     def "verify new user has date created"() {
 
-        setup: "add new user with password"
-            User janKowalski = new User("janek123", "jan@kowalski.com", "ToughPass123");
+        setup: "create date object"
             LocalDateTime registrationTime = null;
 
         when: "inserted new user"
-            userRepository.insertUser(janKowalski);
+            userRepository.create(newUser);
 
         and: "get time registered"
-            def fetchedUser = userRepository.getUserById(janKowalski.getId())
+            def fetchedUser = (Optional<User>)userRepository.read(newUser.getId())
             if(fetchedUser.isPresent()) {
                 registrationTime = fetchedUser.get().getRegistered()
             }
@@ -66,19 +71,17 @@ class UserCrudSpec extends Specification {
             registrationTime.getDayOfMonth() == now.getDayOfMonth();
             registrationTime.getHour() <= now.getHour();
 
-        cleanup: "Delete user"
-            userRepository.removeUserByID(janKowalski.getId());
+        cleanup:"delete user from DB"
+            userRepository.delete(newUser)
     }
 
     def "verify hashing user password works"() {
 
         setup: "add new user with password"
-            String plainTextPassword = "ToughPass123";
-            User janKowalski = new User("janek123", "jan@kowalski.com", plainTextPassword);
-            userRepository.insertUser(janKowalski);
+            userRepository.create(newUser);
 
         when: "Hashed password is obtained"
-            def fetchedUser = userRepository.getUserById(janKowalski.getId())
+            def fetchedUser = (Optional<User>)userRepository.read(newUser.getId())
 
         then: "verify plain password is not same as hashed one"
             String hashedPassword = fetchedUser.get().getPassword()
@@ -89,9 +92,6 @@ class UserCrudSpec extends Specification {
 
         and: "finally verify hashed password against plain password"
             PasswordUtil.verifyHashPassword(plainTextPassword, hashedPassword)
-
-        cleanup: "Delete Jan Kowalski"
-            userRepository.removeUserByID(janKowalski.getId());
     }
 
     def "verify user can't be added with same email twice"() {
@@ -100,9 +100,9 @@ class UserCrudSpec extends Specification {
             User brad = new User("Brad Orwell", "josh@wilkinsonn.com", "farm564")
 
         when:"users are inserted in repository"
-            userRepository.insertUser(joshua);
+            userRepository.create(joshua);
             try {
-                userRepository.insertUser(brad);
+                userRepository.create(brad);
             }
         catch (Exception e) {}
 
@@ -114,11 +114,36 @@ class UserCrudSpec extends Specification {
 
         cleanup:"delete users"
             if(joshua.getId() != null) {
-                userRepository.removeUserByID(joshua.getId())
+                userRepository.delete(joshua)
             }
             if(brad.getId() != null) {
-                userRepository.removeUserByID(brad.getId())
+                userRepository.delete(brad)
             }
+    }
 
+    def "verify all users can be fetched"() {
+
+        given: "two users with same email"
+            User joshua = new User("Joshua Wilkinson", "josh@wilkinsonn.com", "razor4ever")
+            User brad = new User("Brad Orwell", "josh@wilkinsonn.com", "farm564")
+            User zack = new User("Zacknafein", "zack@delves.com", "ER9GB3")
+
+        when: "users are persisted"
+            userRepository.create(joshua)
+            userRepository.create(brad)
+            userRepository.create(zack)
+
+        and: "All users are fetched"
+            List<User> allUsers = userRepository.getAllUsers();
+
+        then: "verify"
+            allUsers.contains(joshua)
+            allUsers.contains(brad)
+            allUsers.contains(zack)
+
+        cleanup: "delete users"
+            userRepository.delete(joshua)
+            userRepository.delete(brad)
+            userRepository.delete(zack)
     }
 }

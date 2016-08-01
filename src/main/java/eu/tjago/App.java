@@ -2,7 +2,7 @@ package eu.tjago;
 
 import eu.tjago.dao.UserRepository;
 import eu.tjago.dao.impl.UserRepositoryImpl;
-import eu.tjago.util.DbUtil;
+import eu.tjago.entity.User;
 
 import java.util.List;
 import java.util.Optional;
@@ -26,7 +26,7 @@ public class App
     private void run() {
 
         try {
-            userRepository.insertUser("mrpaullo", "JohnPaullo@gmail.com");
+            userRepository.create(new User("mrpaullo", "JohnPaullo@gmail.com", "pass123"));
         } catch (Exception e) {
             e.printStackTrace();
         }

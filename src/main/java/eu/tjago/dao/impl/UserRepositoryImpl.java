@@ -2,43 +2,56 @@ package eu.tjago.dao.impl;
 
 import eu.tjago.dao.UserRepository;
 import eu.tjago.entity.User;
-import eu.tjago.entity.UserMeta;
 import org.apache.log4j.Logger;
 
-import javax.persistence.*;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+import javax.persistence.Query;
 import java.util.List;
 import java.util.Optional;
 
 /**
  * Created by tjago on 2016-04-14.
  */
-public class UserRepositoryImpl implements UserRepository {
+public class UserRepositoryImpl extends GenericDaoImpl implements UserRepository {
 
     Logger logger = Logger.getLogger(this.getClass());
 
     private EntityManagerFactory emf = Persistence.createEntityManagerFactory("wordpress-dao");
 
-    @Override
-    public Long insertUser(String username, String email) throws Exception {
-        return insertUser(new User(username, email));
+    public UserRepositoryImpl() {
+        super(User.class);
     }
 
     @Override
-    public Long insertUser(User user) throws Exception {
+    public Object create(Object o) {
+        try {
+            return insertUser((User)o);
+        } catch (Exception e) {
+            logger.warn(e);
+        }
+        return null;
+    }
+
+    /**
+     * Create user with email Duplication verification
+     * @param user
+     * @return
+     * @throws Exception
+     */
+    public User insertUser(User user) throws Exception {
         if (!user.getEmail().isEmpty() &&
                 !getUserByEmail(user.getEmail()).isPresent()) {
 
-            EntityManager em = emf.createEntityManager();
             try {
-                em.getTransaction().begin();
-                em.persist(user);
-                em.getTransaction().commit();
-                return user.getId();
+                entityManager.getTransaction().begin();
+                entityManager.persist(user);
+                entityManager.getTransaction().commit();
+                return user;
             } catch(Exception e) {
-                if(em.getTransaction() != null) { em.getTransaction().rollback(); }
+                if(entityManager.getTransaction() != null) { entityManager.getTransaction().rollback(); }
                 logger.error(e.getMessage());
-            } finally {
-                em.close();
             }
         } else {
             throw new Exception("Trying to insert an empty user or with same email");
@@ -47,117 +60,87 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public boolean updateUser(User user) {
-        EntityManager em = emf.createEntityManager();
-        try {
-            em.getTransaction().begin();
-            em.merge(user);
-            em.getTransaction().commit();
-        } catch(Exception e) {
-            if(em.getTransaction() != null) { em.getTransaction().rollback(); }
-            logger.error(e.getMessage());
-        } finally {
-            em.close();
-        }
-        return true;
-    }
-
-    @Override
     public void removeUserByID(Long userId) {
         EntityManager em = emf.createEntityManager();
         try {
-            em.getTransaction().begin();
-            User user = em.find(User.class, userId);
-            em.remove(user);
-            em.getTransaction().commit();
+            entityManager.getTransaction().begin();
+            User user = this.entityManager.find(User.class, userId);
+            entityManager.remove(user);
+            entityManager.getTransaction().commit();
         } catch(Exception e) {
-            if(em.getTransaction() != null) { em.getTransaction().rollback(); }
+            if(entityManager.getTransaction() != null) { entityManager.getTransaction().rollback(); }
             logger.error(e.getMessage());
-        } finally {
-            em.close();
         }
     }
 
     @Override
     public List<User> getAllUsers() {
         List<User> users = null;
-        EntityManager em = emf.createEntityManager();
         try {
-            em.getTransaction().begin();
-            Query query = em.createNamedQuery(User.GET_ALL_USERS);
+            this.entityManager.getTransaction().begin();
+            Query query = this.entityManager.createNamedQuery(User.GET_ALL_USERS);
             users = query.getResultList();
-            em.getTransaction().commit();
+            this.entityManager.getTransaction().commit();
         } catch(Exception e) {
-            if(em.getTransaction() != null) { em.getTransaction().rollback(); }
+            if(this.entityManager.getTransaction() != null) { this.entityManager.getTransaction().rollback(); }
             e.printStackTrace();
-        } finally {
-            em.close();
         }
         return users;
     }
 
-    @Override
+    @Deprecated
     public Optional<User> getUserById(Long userId) {
-        EntityManager em = emf.createEntityManager();
         try {
-            em.getTransaction().begin();
+            this.entityManager.getTransaction().begin();
 
-            Query namedQuery = em.createNamedQuery(User.GET_USER_BY_ID);
+            Query namedQuery = this.entityManager.createNamedQuery(User.GET_USER_BY_ID);
             namedQuery.setParameter("userId", userId);
             User user = (User)namedQuery.getSingleResult();
 
-            em.getTransaction().commit();
+            this.entityManager.getTransaction().commit();
 
             return Optional.ofNullable(user);
         } catch(Exception e) {
-            if(em.getTransaction() != null) { em.getTransaction().rollback(); }
+            if(this.entityManager.getTransaction() != null) { this.entityManager.getTransaction().rollback(); }
             logger.error(e.getMessage());
-        } finally {
-            em.close();
         }
         return Optional.empty();
     }
 
     @Override
     public Optional<User> getUserByEmail(String email) {
-        EntityManager em = emf.createEntityManager();
         try {
-            em.getTransaction().begin();
+            this.entityManager.getTransaction().begin();
 
-            Query namedQuery = em.createNamedQuery(User.GET_USER_BY_EMAIL);
+            Query namedQuery = this.entityManager.createNamedQuery(User.GET_USER_BY_EMAIL);
             namedQuery.setParameter("email", email);
             User user = (User)namedQuery.getSingleResult();
 
-            em.getTransaction().commit();
+            this.entityManager.getTransaction().commit();
 
             return Optional.ofNullable(user);
         } catch(Exception e) {
-            if(em.getTransaction() != null) { em.getTransaction().rollback(); }
+            if(this.entityManager.getTransaction() != null) { this.entityManager.getTransaction().rollback(); }
             logger.info(e.getMessage());
-        } finally {
-            em.close();
         }
         return Optional.empty();
     }
 
     @Override
     public Optional<List<User>> getUsersLike(String pattern) {
-        EntityManager em = emf.createEntityManager();
         try {
-            em.getTransaction().begin();
+            this.entityManager.getTransaction().begin();
 
-            Query namedQuery = em.createNamedQuery(User.GET_USERS_LIKE);
+            Query namedQuery = this.entityManager.createNamedQuery(User.GET_USERS_LIKE);
             namedQuery.setParameter("pattern", "%" + pattern + "%");
             List<User> users = namedQuery.getResultList();
 
-            em.getTransaction().commit();
+            this.entityManager.getTransaction().commit();
 
             return Optional.ofNullable(users);
         } catch(Exception e) {
-            if(em.getTransaction() != null) { em.getTransaction().rollback(); }
+            if(this.entityManager.getTransaction() != null) { this.entityManager.getTransaction().rollback(); }
             logger.error(e.getMessage());
-        } finally {
-            em.close();
         }
         return Optional.empty();
     }
