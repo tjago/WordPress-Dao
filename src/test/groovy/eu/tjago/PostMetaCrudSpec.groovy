@@ -55,6 +55,30 @@ class PostMetaCrudSpec extends Specification {
             postMetaRepository.delete(newsTags);
     }
 
+    def "modify PostMeta"() {
+
+        given:"new PostMeta"
+            def newsTags = new PostMeta(news.getId(), "Tags", "weather, alert")
+
+        when:"persist PostMeta"
+            postMetaRepository.create(newsTags);
+
+        and:"get PostMeta from dao and modify"
+            PostMeta fetchedTags = postMetaRepository.read(newsTags.getId()).get() as PostMeta;
+            fetchedTags.setValue("money, charts")
+
+        and: "modify and merge PostMeta"
+            PostMeta fetchedTagsModified = postMetaRepository.read(fetchedTags.getId()).get() as PostMeta;
+
+        then: "verify fetched data matched input"
+            fetchedTagsModified.getValue() == "money, charts";
+
+        cleanup:"delete PostMeta"
+            postMetaRepository.delete(newsTags);
+    }
+
+
+
     def "get list of PostMeta"() {
 
         given:"new multiple Postmeta"

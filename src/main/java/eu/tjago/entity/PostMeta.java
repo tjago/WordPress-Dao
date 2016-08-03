@@ -89,4 +89,22 @@ public class PostMeta {
     public String getValue() {
         return value;
     }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setPostId(Long postId) {
+        this.postId = postId;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
+
+
 }
