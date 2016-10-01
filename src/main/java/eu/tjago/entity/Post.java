@@ -27,7 +27,7 @@ public class Post {
     private Long id;
 
 
-    @OneToOne(cascade = CascadeType.MERGE)
+    @OneToOne(cascade = CascadeType.PERSIST) //changed from Merge
     @JoinColumn(name ="post_author", nullable = false)
 //    @Column(name ="post_author")
     private User author;

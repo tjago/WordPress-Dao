@@ -24,7 +24,7 @@ class PostCrudSpec extends Specification {
     def "insert post"() {
         given: "new post was created"
             User russel = new User("niceGuy", "RickMartin@hollywood.com", "sourceofwater");
-            Long userId = userRepository.insertUser(russel);
+            userRepository.create(russel);
             Post todayNews = new Post("People has landed on Mars", "Breaking news!", russel);
 
         when: "insert post in DB"
@@ -35,16 +35,16 @@ class PostCrudSpec extends Specification {
 
         cleanup: "remove post"
             postRepository.deletePostById(postId);
-            userRepository.removeUserByID(userId);
+            userRepository.delete(russel);
     }
 
     def "verify update of the post"() {
         given:"new user"
             User russel = new User("niceGuy", "russelcrowe@hollywood.com", "sourceofwater");
-            Long userId = userRepository.insertUser(russel);
+            userRepository.create(russel);
 
         and: "new post by user"
-            Post todayNews = new Post("People has landed on Mars", "Breaking news!", russel);
+            Post todayNews = new Post("People has landed on Mars", "Breaking news!", russel.getId());
             postRepository.insertPost(todayNews)
 
         when: "post is changed"
@@ -58,16 +58,16 @@ class PostCrudSpec extends Specification {
 
         cleanup:
             postRepository.deletePostById(todayNews.getId());
-            userRepository.removeUserByID(userId);
+            userRepository.delete(russel);
     }
 
     def "verify delete post works"() {
         given:"new user"
             User russel = new User("niceGuy", "russelcrowe@hollywood.com", "sourceofwater");
-            Long userId = userRepository.insertUser(russel);
+            userRepository.create(russel);
 
         and:"persisted to DB"
-            Post todayNews = new Post("People has landed on Mars", "Breaking news!", russel);
+            Post todayNews = new Post("People has landed on Mars", "Breaking news!", russel.getId());
             postRepository.insertPost(todayNews)
 
         when:"Post deleted"
@@ -80,7 +80,7 @@ class PostCrudSpec extends Specification {
             userRepository.getUserById(userId).isPresent()
 
         cleanup:"remove user"
-            userRepository.removeUserByID(userId)
+            userRepository.delete(russel)
 
     }
 

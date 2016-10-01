@@ -41,20 +41,20 @@ public class UserRepositoryImpl extends GenericDaoImpl implements UserRepository
      * @throws Exception
      */
     public User insertUser(User user) throws Exception {
-        if (!user.getEmail().isEmpty() &&
-                !getUserByEmail(user.getEmail()).isPresent()) {
+        if (user.getEmail().isEmpty()) {
+            throw new Exception("Trying to insert empty User");
+        } else if(getUserByEmail(user.getEmail()).isPresent()) {
+            throw new Exception("Trying to insert an User with same email");
+        }
 
-            try {
-                entityManager.getTransaction().begin();
-                entityManager.persist(user);
-                entityManager.getTransaction().commit();
-                return user;
-            } catch(Exception e) {
-                if(entityManager.getTransaction() != null) { entityManager.getTransaction().rollback(); }
-                logger.error(e.getMessage());
-            }
-        } else {
-            throw new Exception("Trying to insert an empty user or with same email");
+        try {
+            entityManager.getTransaction().begin();
+            entityManager.persist(user);
+            entityManager.getTransaction().commit();
+            return user;
+        } catch(Exception e) {
+            if(entityManager.getTransaction() != null) { entityManager.getTransaction().rollback(); }
+            logger.error(e.getMessage());
         }
         return null;
     }
