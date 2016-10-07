@@ -77,6 +77,36 @@ public class GenericDaoImpl<T, PK extends Serializable> implements GenericDao<T,
         return Optional.empty();
     }
 
+    /**
+     * @see http://www.thoughts-on-java.org/hibernate-tips-use-pagination-jpql/
+     * @param start
+     * @param size
+     * @return
+     */
+    @Override
+    public Optional<List<T>> readSlice(int start, int size) {
+
+        try {
+            this.entityManager.getTransaction().begin();
+
+            Query query = entityManager
+                    .createNamedQuery("select e from " + entityClass.getName())
+                    .setFirstResult(start)
+                    .setMaxResults(size);
+
+            @SuppressWarnings("unchecked")
+            List<T> listOfEntities = (List<T>) query.getResultList();
+
+            this.entityManager.getTransaction().commit();
+
+            return Optional.ofNullable(listOfEntities);
+        } catch(Exception e) {
+            if(entityManager.getTransaction() != null) { entityManager.getTransaction().rollback(); }
+            logger.error(e.getMessage());
+        }
+        return Optional.empty();
+    }
+
     @Override
     public T update(T t) {
         try {

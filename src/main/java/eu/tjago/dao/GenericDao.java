@@ -15,6 +15,8 @@ public interface GenericDao<T, PK extends Serializable> {
 
     Optional<List<T>> readAll();
 
+    Optional<List<T>> readSlice(int start, int size);
+
     T update(T t);
 
     void delete(T t);
